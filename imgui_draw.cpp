@@ -1,4 +1,4 @@
-// dear imgui, v1.89.5 WIP
+// dear imgui, v1.89.6 WIP
 // (drawing and font code)
 
 /*
@@ -2553,13 +2553,10 @@ static bool ImFontAtlasBuildWithStbTruetype(ImFontAtlas* atlas)
     // 9. Setup ImFont and glyphs for runtime
     for (int src_i = 0; src_i < src_tmp_array.Size; src_i++)
     {
-        ImFontBuildSrcData& src_tmp = src_tmp_array[src_i];
-        if (src_tmp.GlyphsCount == 0)
-            continue;
-
         // When merging fonts with MergeMode=true:
         // - We can have multiple input fonts writing into a same destination font.
         // - dst_font->ConfigData is != from cfg which is our source configuration.
+        ImFontBuildSrcData& src_tmp = src_tmp_array[src_i];
         ImFontConfig& cfg = atlas->ConfigData[src_i];
         ImFont* dst_font = cfg.DstFont;
 
@@ -2623,6 +2620,9 @@ void ImFontAtlasBuildPackCustomRects(ImFontAtlas* atlas, void* stbrp_context_opa
 
     ImVector<ImFontAtlasCustomRect>& user_rects = atlas->CustomRects;
     IM_ASSERT(user_rects.Size >= 1); // We expect at least the default custom rects to be registered, else something went wrong.
+#ifdef __GNUC__
+    if (user_rects.Size < 1) { __builtin_unreachable(); } // Workaround for GCC bug if IM_ASSERT() is defined to conditionally throw (see #5343)
+#endif
 
     ImVector<stbrp_rect> pack_rects;
     pack_rects.resize(user_rects.Size);
