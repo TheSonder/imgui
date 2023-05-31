@@ -1,3 +1,16 @@
+# path
+.vscode/
+bin/
+bin-int/
+
+# Files
+*.vcxproj
+*.vcxproj.user
+*.vcxproj.filters
+*.sln
+
+# Exclude
+!vendor/bin
 ## OSX artifacts
 .DS_Store
 
